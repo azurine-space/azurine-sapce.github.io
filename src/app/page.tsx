@@ -1,16 +1,4 @@
 import Image from 'next/image'
-import { gql, useQuery } from 'urql';
-
-// const gql = (str: TemplateStringsArray) => str
-
-const TodosQuery = gql`
-  query {
-    todos {
-      id
-      title
-    }
-  }
-`;
 
 export default function Home() {
   return (

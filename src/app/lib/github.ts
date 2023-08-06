@@ -1,6 +1,7 @@
 import { graphql } from '@octokit/graphql'
+import { Discussion } from './discussion'
 
-const gql = (s:TemplateStringsArray):string => s.toString()
+const gql = (s: TemplateStringsArray): string => s.toString()
 
 const owner = process.env.GITHUB_OWNER
 const repo = process.env.GITHUB_REPOSITORY
@@ -19,22 +20,10 @@ export function getCategoryNameFromId(id: string) {
   return undefined
 }
 
-export type Discussion = {
-  title: string
-  createdAt: string
-  updatedAt: string
-  body: string
-  bodyHTML: string
-  number: number
-  category: {
-    id: string
-  }
-}
-
 const api = graphql.defaults({
   headers: {
     authorization: 'token '.concat(process.env.GITHUB_ACCESS_TOKEN!),
-  },
+  }
 })
 
 type ListDiscussionsResult = {
@@ -53,7 +42,7 @@ type ListDiscussions = {
   category: CategoryKeys
 }
 
-export async function listDiscussions({ category }: ListDiscussions) {
+export async function listDiscussions({ category }: ListDiscussions, size: number = 100) {
   let hasNextPage = true
   let after: string | null = null
   let discussions: Discussion[] = []
@@ -61,10 +50,10 @@ export async function listDiscussions({ category }: ListDiscussions) {
   do {
     const result: ListDiscussionsResult = await api(
       gql`
-      query list($owner: String!, $repo: String!, $categoryId: ID! $after: String) {
+      query list($owner: String!, $repo: String!, $categoryId: ID! $after: String, $size: Int) {
         repository(owner: $owner, name: $repo) {
           discussions(
-            first: 100,
+            first: $size,
             after: $after,
             categoryId: $categoryId,
             orderBy: { field: CREATED_AT, direction: DESC }
@@ -88,7 +77,7 @@ export async function listDiscussions({ category }: ListDiscussions) {
         }
       }
     `,
-      { owner, repo, categoryId: categoryIds[category], after }
+      { owner, repo, categoryId: categoryIds[category], after, size }
     )
 
     const { pageInfo, nodes } = result.repository.discussions
@@ -158,3 +147,10 @@ export async function getDiscussion({ slug, category }: GetDiscussion) {
 
   return discussion
 }
+
+const github = {
+  getCategoryNameFromId,
+  getDiscussion,
+  listDiscussions,
+};
+export default github;

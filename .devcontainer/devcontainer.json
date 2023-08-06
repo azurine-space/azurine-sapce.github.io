@@ -7,8 +7,22 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"GraphQL.vscode-graphql"
+				"GraphQL.vscode-graphql",
+				"Orta.vscode-jest",
+				"scalameta.metals"
 			]
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers-contrib/features/scala-sdkman:2": {
+			"version": "latest",
+			"jdkVersion": "latest",
+			"jdkDistro": "tem"
+		},
+		"ghcr.io/devcontainers-contrib/features/sbt-sdkman:2": {
+			"version": "latest",
+			"jdkVersion": "latest",
+			"jdkDistro": "tem"
 		}
 	}
 

@@ -1,3 +1,6 @@
 {
-  "jest.rootPath": "/workspaces/azurine-space-blog"
+  "jest.rootPath": "/workspaces/azurine-space-blog",
+  "files.watcherExclude": {
+    "**/target": true
+  }
 }
